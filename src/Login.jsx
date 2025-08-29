@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Login = () => {
@@ -18,19 +18,22 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const result = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/login`, {
-        email: formData.email,
-        password: formData.password,
-      });
+      const result = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/login`,
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      );
 
       console.log("Server Response:", result.data);
 
       if (result.data.status === "Success") {
-        navigate("/"); // go to main app page
+        alert(`Login successful!\nWelcome back, ${result.data.user.name}`);
+        navigate("/"); // Redirect to homepage
       } else {
         alert(result.data.error || "Invalid email or password!");
       }
-
     } catch (err) {
       console.error("Error:", err.response ? err.response.data : err);
       alert(err.response?.data?.error || "Something went wrong!");
@@ -38,16 +41,82 @@ const Login = () => {
   };
 
   return (
-    <div 
-      className="d-flex justify-content-center align-items-center vh-100"
+    <div
       style={{
-        background: "linear-gradient(to right, #667eea, #764ba2)", // gradient background
-        backgroundSize: "cover",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        background: "linear-gradient(135deg, #667eea, #764ba2, #ff758c)",
+        backgroundSize: "400% 400%",
+        animation: "gradientBG 15s ease infinite",
       }}
     >
-      <div className="card shadow-lg p-4" style={{ width: "400px", borderRadius: "20px", background: "rgba(255,255,255,0.95)" }}>
+      <style>
+        {`
+          @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+
+          .card-custom {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            background: #ffffff;
+            padding: 20px;
+          }
+
+          .btn-custom {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #fff;
+            transition: all 0.3s ease;
+          }
+
+          .btn-custom:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+          }
+
+          input.form-control {
+            border-radius: 10px;
+            border: 1px solid #667eea;
+            padding: 12px;
+            background: #f0f8ff;
+            color: #333;
+          }
+
+          input.form-control::placeholder {
+            color: #888;
+          }
+
+          a.text-decoration-none {
+            color: #764ba2;
+            transition: all 0.3s;
+            font-weight: 600;
+          }
+
+          a.text-decoration-none:hover {
+            color: #667eea;
+            text-decoration: underline;
+          }
+        `}
+      </style>
+
+      <div className="card shadow-lg card-custom" style={{ width: "400px" }}>
         <div className="card-body">
-          <h3 className="card-title text-center mb-4" style={{ fontWeight: "700", color: "#333" }}>Login</h3>
+          <h3
+            className="card-title text-center mb-4"
+            style={{ fontFamily: "'Poppins', sans-serif", fontWeight: "700" }}
+          >
+            Login
+          </h3>
           <form onSubmit={handleSubmit}>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">Email address</label>
@@ -77,18 +146,16 @@ const Login = () => {
               />
             </div>
 
-            <button 
-              type="submit" 
-              className="btn btn-primary w-100"
-              style={{ backgroundColor: "#667eea", border: "none", fontWeight: "600" }}
-            >
+            <button type="submit" className="btn btn-custom w-100">
               Login
             </button>
           </form>
 
-          <p className="text-center mt-3" style={{ color: "#555" }}>
-            Don't have an account?{" "}
-            <a href="/signup" className="text-decoration-none" style={{ color: "#764ba2", fontWeight: "600" }}>Sign Up</a>
+          <p className="text-center mt-3">
+            Don’t have an account?{" "}
+            <Link to="/signup" className="text-decoration-none">
+              Sign Up
+            </Link>
           </p>
         </div>
       </div>

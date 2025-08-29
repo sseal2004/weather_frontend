@@ -9,7 +9,6 @@ const Signup = () => {
     name: "",
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const handleChange = (e) => {
@@ -19,23 +18,27 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
     try {
-      const result = await axios.post(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/signup`, {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-      });
+      const result = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/signup`,
+        {
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }
+      );
+
       console.log("Server Response:", result.data);
-      alert(`Signed up successfully!\nName: ${formData.name}\nEmail: ${formData.email}`);
-      navigate('/login');
+
+      if (result.data.status === "Success") {
+        alert(`Signup successful!\nWelcome, ${formData.name}`);
+        navigate("/login");
+      } else {
+        alert(result.data.error || "Something went wrong!");
+      }
     } catch (err) {
-      console.error("Error:", err);
-      alert("Something went wrong while signing up!");
+      console.error("Error:", err.response ? err.response.data : err);
+      alert(err.response?.data?.error || "Something went wrong!");
     }
   };
 
@@ -46,7 +49,7 @@ const Signup = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "linear-gradient(135deg, #4A00E0, #8E2DE2, #FF4E50)",
+        background: "linear-gradient(135deg, #667eea, #764ba2, #ff758c)",
         backgroundSize: "400% 400%",
         animation: "gradientBG 15s ease infinite",
       }}
@@ -63,13 +66,12 @@ const Signup = () => {
             border-radius: 20px;
             border: none;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            background: #ffffff; /* White card */
-            color: #0D47A1; /* Blue text accents */
+            background: #ffffff;
             padding: 20px;
           }
 
           .btn-custom {
-            background: linear-gradient(90deg, #1E90FF, #4A90E2);
+            background: linear-gradient(90deg, #667eea, #764ba2);
             border: none;
             border-radius: 50px;
             padding: 10px 20px;
@@ -86,23 +88,24 @@ const Signup = () => {
 
           input.form-control {
             border-radius: 10px;
-            border: 1px solid #1E90FF;
+            border: 1px solid #667eea;
             padding: 12px;
-            background: #f0f8ff; /* light blue input */
-            color: #0D47A1;
+            background: #f0f8ff;
+            color: #333;
           }
 
           input.form-control::placeholder {
-            color: #6495ED; /* lighter blue placeholder */
+            color: #888;
           }
 
           a.text-decoration-none {
-            color: #1E90FF;
+            color: #764ba2;
             transition: all 0.3s;
+            font-weight: 600;
           }
 
           a.text-decoration-none:hover {
-            color: #4A90E2;
+            color: #667eea;
             text-decoration: underline;
           }
         `}
@@ -110,7 +113,10 @@ const Signup = () => {
 
       <div className="card shadow-lg card-custom" style={{ width: "400px" }}>
         <div className="card-body">
-          <h3 className="card-title text-center mb-4" style={{ fontFamily: "'Poppins', sans-serif", fontWeight: '700' }}>
+          <h3
+            className="card-title text-center mb-4"
+            style={{ fontFamily: "'Poppins', sans-serif", fontWeight: "700" }}
+          >
             Sign Up
           </h3>
           <form onSubmit={handleSubmit}>
@@ -156,26 +162,16 @@ const Signup = () => {
               />
             </div>
 
-            <div className="mb-3">
-              <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                className="form-control"
-                placeholder="Re-enter your password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <button type="submit" className="btn btn-custom w-100">Sign Up</button>
+            <button type="submit" className="btn btn-custom w-100">
+              Sign Up
+            </button>
           </form>
 
           <p className="text-center mt-3">
             Already have an account?{" "}
-            <Link to="/login" className="text-decoration-none">Login</Link>
+            <Link to="/login" className="text-decoration-none">
+              Login
+            </Link>
           </p>
         </div>
       </div>
