@@ -6,9 +6,9 @@ import Signup from "./SignUp";
 import Login from "./Login";
 import { Home } from "./components/Home";
 
-// ✅ Protected Route Component
+// ✅ ProtectedRoute component
 function ProtectedRoute({ children }) {
-  const user = localStorage.getItem("user"); // stored on login/signup
+  const user = localStorage.getItem("user"); // check if user exists
   return user ? children : <Navigate to="/login" replace />;
 }
 
@@ -18,7 +18,7 @@ function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
 
-      {/* ✅ Protect Home */}
+      {/* ✅ Protect the home route */}
       <Route
         path="/"
         element={

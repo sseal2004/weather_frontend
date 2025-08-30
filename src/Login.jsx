@@ -30,6 +30,10 @@ const Login = () => {
 
       if (result.data.status === "Success") {
         alert(`Login successful!\nWelcome back, ${result.data.user.name}`);
+
+        // ✅ Fix: Save user in localStorage so ProtectedRoute can read it
+        localStorage.setItem("user", JSON.stringify(result.data.user));
+
         navigate("/"); // Redirect to homepage
       } else {
         alert(result.data.error || "Invalid email or password!");

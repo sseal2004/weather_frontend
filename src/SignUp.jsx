@@ -32,7 +32,12 @@ const Signup = () => {
 
       if (result.data.status === "Success") {
         alert(`Signup successful!\nWelcome, ${formData.name}`);
-        navigate("/login");
+
+        // ✅ Store user in localStorage so ProtectedRoute works
+        localStorage.setItem("user", JSON.stringify({ email: formData.email }));
+
+        // ✅ Redirect directly to home instead of login
+        navigate("/");
       } else {
         alert(result.data.error || "Something went wrong!");
       }
