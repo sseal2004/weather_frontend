@@ -36,8 +36,8 @@ const Signup = () => {
         // ✅ Store user in localStorage so ProtectedRoute works
         localStorage.setItem("user", JSON.stringify({ email: formData.email }));
 
-        // ✅ Redirect directly to home instead of login
-        navigate("/");
+        // 🔄 Redirect to login instead of home
+        navigate("/login");
       } else {
         alert(result.data.error || "Something went wrong!");
       }
